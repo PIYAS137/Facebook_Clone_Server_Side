@@ -56,7 +56,7 @@ async function run() {
 
     // get all posts---------------->>>>
     app.get('/getPosts',async(req,res)=>{
-      const result = postCollection.find().toArray()
+      const result =await postCollection.find({}).toArray()
       res.send(result)
     })
     
