@@ -1,10 +1,11 @@
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 require('dotenv').config()
 const app = express()
 const port = process.env.PROT || 5020
-const cors = require('cors')
+const cors = require('cors');
+const { emit } = require('nodemon');
 
 
 
@@ -36,8 +37,8 @@ async function run() {
 
     // get users------------------>>>>
     app.get('/users',async(req,res)=>{
-      res.send("GET USER")
-      console.log("object");
+      const result = await usersCollection.find({}).toArray()
+      res.send(result)
     })
 
     // user users-------------------->>>>
@@ -66,6 +67,29 @@ async function run() {
         query={email : req.query.email}
       }
       const result = await postCollection.find(query).toArray()
+      res.send(result)
+    })
+    // find user by id
+    app.get('/oneUser/:sid',async(req,res)=>{
+      const id = req.params.sid;
+      const filter = {_id : new ObjectId(id)}
+      const result = await usersCollection.findOne(filter)
+      res.send(result)
+    })
+    
+    // create user ducring google login
+    app.put('/googleLogin',async(req,res)=>{
+      const data = req.body;
+      const filter = {email : data.email};
+      const optionas = {upsert : true};
+      const updatedDoc = {
+        $set : {
+          name : data.name,
+          email : data.email,
+          profile : data.profile
+        }
+      }
+      const result = await usersCollection.updateOne(filter,updatedDoc,optionas)
       res.send(result)
     })
     
