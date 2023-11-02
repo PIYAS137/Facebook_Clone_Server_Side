@@ -59,6 +59,15 @@ async function run() {
       const result =await postCollection.find({}).toArray()
       res.send(result)
     })
+    // get only user post-------------->>>>
+    app.get('/getUserPost',async(req,res)=>{
+      let query ={}
+      if(req.query?.email){
+        query={email : req.query.email}
+      }
+      const result = await postCollection.find(query).toArray()
+      res.send(result)
+    })
     
 
 
