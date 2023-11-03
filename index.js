@@ -60,6 +60,7 @@ async function run() {
       const result =await postCollection.find({}).toArray()
       res.send(result)
     })
+
     // get only user post-------------->>>>
     app.get('/getUserPost',async(req,res)=>{
       let query ={}
@@ -69,6 +70,7 @@ async function run() {
       const result = await postCollection.find(query).toArray()
       res.send(result)
     })
+    
     // find user by id
     app.get('/oneUser/:sid',async(req,res)=>{
       const id = req.params.sid;
@@ -90,6 +92,28 @@ async function run() {
         }
       }
       const result = await usersCollection.updateOne(filter,updatedDoc,optionas)
+      res.send(result)
+    })
+
+    // delete operation for post---------->>>>
+    app.delete('/del/:sid',async(req,res)=>{
+      const id = req.params.sid
+      const filter = {_id : new ObjectId(id)}
+      const result = await postCollection.deleteOne(filter);
+      res.send(result)
+    })
+
+    // update operation for post------------>>>>
+    app.put('/update',async(req,res)=>{
+      const data = req.body;
+      const filter = {_id : new ObjectId(data.id)}
+      const updatedDoc={
+        $set:{
+          text: data.text,
+          image : data.pp
+        }
+      }
+      const result = await postCollection.updateOne(filter,updatedDoc)
       res.send(result)
     })
     
